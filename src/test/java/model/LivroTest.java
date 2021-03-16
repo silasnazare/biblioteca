@@ -20,9 +20,4 @@ class LivroTest {
         u = new Usuario("Silas Nazare", 11);
         e = new Emprestimo(u, l);
     }
-    //Realizar Empréstimo em livro que não esteja reservado.
-    @Test
-    void empresta() {
-
-    }
 }
