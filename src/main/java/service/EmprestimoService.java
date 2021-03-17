@@ -1,5 +1,6 @@
 package service;
 
+import model.Devolucao;
 import model.Emprestimo;
 import model.Livro;
 import model.Usuario;
@@ -7,34 +8,40 @@ import model.Usuario;
 import java.time.temporal.ChronoUnit;
 
 public class EmprestimoService {
+
     public Emprestimo emprestaLivro(Usuario usuario, Livro livro) {
-        if (livro.isEmprestado() || !livro.isReservado()) {
-            throw new IllegalArgumentException("O livro já está emprestado ou não foi reservado");
+        if (usuario == null) {
+            throw new IllegalArgumentException("Usuário inválido. Selecione outro usuário!");
         }
-        Emprestimo emprestimo = new Emprestimo(usuario, livro);
-        livro.empresta(livro);
-        emprestimo.setDataEmprestimo();
-        emprestimo.setDataPrevista();
-        emprestimo.setValor(calculaValorDo(emprestimo));
-        livro.adicionaAoHistorico(emprestimo);
-        return emprestimo;
+        if (livro == null) {
+            throw new IllegalArgumentException("Livro inválido. Selecione outro livro!");
+        } else {
+            Emprestimo emprestimo = new Emprestimo(usuario, livro);
+            livro.empresta(livro);
+            livro.adicionaAoHistorico(emprestimo);
+            usuario.adicionaLivroALista(livro);
+            return emprestimo;
+        }
     }
 
-    private double calculaValorDo(Emprestimo emprestimo) {
-        double valorTotal = 0d;
-        emprestimo.setDataDevolucao(2021, 03, 20);
-        long num = emprestimo.getDataPrevista().until(emprestimo.getDataDevolucao(), ChronoUnit.DAYS);
-
-        if (num < 0) {
-            throw new IllegalArgumentException("Data inválida!");
+    public double calculaValorDoEmprestimo(Emprestimo emprestimo, Devolucao devolucao) {
+        if (emprestimo == null || devolucao == null) {
+            throw new IllegalArgumentException("Campo inválido. Tente novamente!");
         }
-        valorTotal += emprestimo.getValor() + (num * 0.4);
-        if (valorTotal >= emprestimo.getValor() * 1.6) {
-            valorTotal = emprestimo.getValor() * 1.6;
+        long tempoEmprestado = emprestimo.getDataPrevista().until(devolucao.getDataDevolucao(), ChronoUnit.DAYS);
+        if (tempoEmprestado < -7) {
+            throw new IllegalArgumentException("Data inválida! Tente novamente!");
+        }
+        double valor = emprestimo.getValor() + (tempoEmprestado * 0.4);
+        if (valor >= (emprestimo.getValor() * 1.6)) {
+            emprestimo.setValor(emprestimo.getValor() * 1.6);
         }
         else {
-            valorTotal = emprestimo.getValor();
+            if (valor < emprestimo.getValor()) {
+                valor = emprestimo.getValor();
+            }
+            emprestimo.setValor(valor);
         }
-        return valorTotal;
+        return emprestimo.getValor();
     }
 }

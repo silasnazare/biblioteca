@@ -61,8 +61,11 @@ public class Livro {
     }
 
     public void reserva(Livro livro) {
-        if (isEmprestado() || isReservado()) {
-            throw new IllegalArgumentException("Livro já emprestado ou já reservado. Selecione outro livro!");
+        if (isReservado()) {
+            throw new IllegalArgumentException("Livro já reservado. Selecione outro livro!");
+        }
+        if (isEmprestado()) {
+            throw new IllegalArgumentException("Livro já emprestado. Selecione outro livro!");
         }
         else {
             this.reservado = true;
@@ -70,11 +73,23 @@ public class Livro {
     }
 
     public void empresta(Livro livro) {
-        if (!isReservado() || isEmprestado()) {
-            throw new IllegalArgumentException("Livro não reservado ou já emprestado. Selecione outro livro!");
+        if (!isReservado()) {
+            throw new IllegalArgumentException("Livro não reservado. Selecione outro livro!");
+        }
+        if (isEmprestado()) {
+            throw new IllegalArgumentException("Livro já emprestado. Selecione outro livro!");
         }
         else {
             this.emprestado = true;
+        }
+    }
+
+    public void devolve(Livro livro) {
+        if (!this.emprestado) {
+            throw new IllegalArgumentException("Livro não emprestado!");
+        }
+        else {
+            this.emprestado = false;
             this.reservado = false;
         }
     }

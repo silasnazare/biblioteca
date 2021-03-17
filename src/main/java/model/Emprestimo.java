@@ -7,12 +7,14 @@ public class Emprestimo {
     private Livro livro;
     private LocalDate dataEmprestimo;
     private LocalDate dataPrevista;
-    private LocalDate dataDevolucao;
-    private double valor = 5.00;
+    private double valor;
 
     public Emprestimo(Usuario usuario, Livro livro) {
         this.usuario = usuario;
         this.livro = livro;
+        this.dataEmprestimo = LocalDate.now();
+        this.dataPrevista = LocalDate.now().plusDays(7);
+        this.valor = 5.00;
     }
 
     public Usuario getUsuario() {
@@ -35,24 +37,16 @@ public class Emprestimo {
         return dataEmprestimo;
     }
 
-    public void setDataEmprestimo() {
-        this.dataEmprestimo = LocalDate.now();
+    public void setDataEmprestimo(LocalDate dataEmprestimo) {
+        this.dataEmprestimo = dataEmprestimo;
     }
 
     public LocalDate getDataPrevista() {
         return dataPrevista;
     }
 
-    public void setDataPrevista() {
-        this.dataPrevista = LocalDate.now().plusDays(7);
-    }
-
-    public LocalDate getDataDevolucao() {
-        return dataDevolucao;
-    }
-
-    public void setDataDevolucao(int ano, int mes, int dia) {
-        this.dataDevolucao = LocalDate.of(ano, mes, dia);
+    public void setDataPrevista(LocalDate dataPrevista) {
+        this.dataPrevista = dataPrevista;
     }
 
     public double getValor() {

@@ -31,4 +31,8 @@ public class Usuario extends Pessoa {
         }
         this.livrosEmprestados.add(livro);
     }
+
+    public void removeLivroDaLista(Livro livro) {
+        this.livrosEmprestados.remove(livro);
+    }
 }
